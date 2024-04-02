@@ -373,9 +373,9 @@ def visualize_delaunay():
 
     #Create boolean variables
     drawBlueTriag_ = tk.BooleanVar()
-    drawRedTriag_ = tk.BooleanVar()
+    drawRedTriag_ = tk.BooleanVar(value=True)
     drawBluePoints_ = tk.BooleanVar()
-    drawRedPoints_ = tk.BooleanVar()
+    drawRedPoints_ = tk.BooleanVar(value=True)
     drawConnectors_ = tk.BooleanVar()
     drawTriagLabelsBlue_ = tk.BooleanVar()
     drawPointLabelsBlue_ = tk.BooleanVar()
@@ -445,15 +445,23 @@ def visualize_delaunay():
     tri_, points2D_, x_, y_, z_ = createDelaunay(defaultPoints=defaultPoints_.get(), numb_points=numb_points_.get())
 
     # Creating a 3D plot (a bit larger than default)
-    fig_ = plt.figure(figsize=(12, 8))
+    fig_ = plt.figure(figsize=(20, 20))
+
     ax_ = fig_.add_subplot(111, projection='3d')
 
     # Function to call the visualization function with current GUI parameters
     def update_visualization(optional_function=None):
 
+        #Save axis orientation before resetting
+        axis = fig_.get_axes()[0]
+        elev_, azim_ = axis.elev, axis.azim
+
         #Clear figure and add axis when updating
         fig_.clf()
         ax_ = fig_.add_subplot(111, projection='3d')
+
+        #Restore orientation after resetting
+        ax_.view_init(elev=elev_, azim=azim_)
 
         #Reset the points to highlight
         global highlight_points 
@@ -488,7 +496,7 @@ def visualize_delaunay():
                      debugInfo = debugInfo_.get(),                                        #Should there be debug information?                      DEBUGGING
                      circle_numb_points = circle_numb_points_.get(),                      #How many points should be in a "Delaunay" circle        NON-DELAUNAY TRIANGLES
                      highlightPointsInsideCircle = highlightPointsInsideCircle_.get())    #Show points inside "Delaunay" circle                    NON-DELAUNAY TRIANGLES
- 
+
 
     def flipTriangles():
         #Flip the triangles internally
@@ -497,29 +505,28 @@ def visualize_delaunay():
              tri = tri_, 
              debugInfo = debugInfo_.get())
 
+        #Partial function that makes sure orientation remains the same
+
         #Update figure to show changes
         update_visualization()
 
     def drawCircle2D():
         #Partially execute function and pass it to the update process
-        deferred_call = lambda ax_param : drawCircle(index1 = circle_index1_.get(), 
-                                                     index2 = circle_index2_.get(), 
-                                                     index3 = circle_index3_.get(), 
-                                                     circle_numb_points= circle_numb_points_.get(),
-                                                     x = x_, 
-                                                     y = y_, 
-                                                     z = z_, 
-                                                     ax = ax_param, # Will be added later
-                                                     highlightPointsInsideCircle = highlightPointsInsideCircle_.get(),
-                                                     debugInfo = debugInfo_.get())
+        circle_draw = lambda ax_param : drawCircle(index1 = circle_index1_.get(), 
+                                                   index2 = circle_index2_.get(), 
+                                                   index3 = circle_index3_.get(), 
+                                                   circle_numb_points= circle_numb_points_.get(),
+                                                   x = x_, 
+                                                   y = y_, 
+                                                   z = z_, 
+                                                   ax = ax_param, # Will be added later
+                                                   highlightPointsInsideCircle = highlightPointsInsideCircle_.get(),
+                                                   debugInfo = debugInfo_.get())
          
         #Note how ax was not set as we will want to do this inside of the visualisation function
-        update_visualization(deferred_call)
-        
+        update_visualization(circle_draw)
         
 
-        
-    
     # Button to update the visualization
     tk.Button(root, text="Update Visualization", command=update_visualization).pack()
 
@@ -532,7 +539,6 @@ def visualize_delaunay():
     # Start the GUI event loop
     root.mainloop()
 
-    
     
 visualize_delaunay()
     
