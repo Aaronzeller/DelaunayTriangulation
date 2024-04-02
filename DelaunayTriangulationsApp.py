@@ -409,15 +409,14 @@ def visualize_delaunay():
     tk.Label(root, text="Paraboloid Strength").pack()
     Entry(root, textvariable=paraboloidStrength_).pack()
 
-    # Add entry fields for number of points
+    # Add read-only field for number of points
     numb_points_ = IntVar(value=50)
     tk.Label(root, text="Number of Points").pack()
-    Entry(root, textvariable=numb_points_).pack()
+    readonly_entry_numb_points = tk.Entry(root, textvariable=numb_points_, state='readonly')
+    readonly_entry_numb_points.pack()
 
-    # Add entry fields for number of points to plot a circle with
+    # This is only used internally
     circle_numb_points_ = IntVar(value=50)
-    tk.Label(root, text="Number of Points for Circle").pack()
-    Entry(root, textvariable=circle_numb_points_).pack()
 
     # Add entry fields for the triangles to be flipped
     triangle_index1_ = IntVar(value=0)
@@ -443,7 +442,7 @@ def visualize_delaunay():
 
     #Initialise the Delaunay Triangulation
     tri_, points2D_, x_, y_, z_ = createDelaunay(defaultPoints=defaultPoints_.get(), numb_points=numb_points_.get())
-
+    
     # Creating a 3D plot (a bit larger than default)
     fig_ = plt.figure(figsize=(20, 20))
 
@@ -525,7 +524,6 @@ def visualize_delaunay():
          
         #Note how ax was not set as we will want to do this inside of the visualisation function
         update_visualization(circle_draw)
-        
 
     # Button to update the visualization
     tk.Button(root, text="Update Visualization", command=update_visualization).pack()
@@ -539,8 +537,11 @@ def visualize_delaunay():
     # Start the GUI event loop
     root.mainloop()
 
-    
+
+#Start the program
 visualize_delaunay()
+
+
     
 
 
