@@ -51,7 +51,7 @@ def createDelaunay(defaultPoints, numb_points):
 #=============================================== METHODS ===============================================#
 
 #Draws a triangle given the point indices - in lifted triangulation
-def drawTriangleBlue(index1, index2, index3, ax, x, y, z, highlightChanges):
+def drawTriangleBlue(index1, index2, index3, ax, x, y, z):
 
     #Make sure colour is recognised as global one
     global blue_transparent
@@ -62,16 +62,12 @@ def drawTriangleBlue(index1, index2, index3, ax, x, y, z, highlightChanges):
 
     # This is how I made it work - probably there are better ways though
     triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
-
-    if highlightChanges:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
-    else:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='blue', linewidths=1, edgecolors=blue_transparent)
+    triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
 
     ax.add_collection3d(triangle) 
 
 #Draws a triangle given the list of incides - in lifted triangulation
-def drawTriangleBlue(triagIndices, ax, x, y, z, highlightChanges):
+def drawTriangleBlue(triagIndices, ax, x, y, z):
     
     #Make sure colour is recognised as global one
     global blue_transparent
@@ -86,16 +82,12 @@ def drawTriangleBlue(triagIndices, ax, x, y, z, highlightChanges):
 
     # This is how I made it work - probably there are better ways though
     triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
-    
-    if highlightChanges:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
-    else:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='blue', linewidths=1, edgecolors=blue_transparent)
+    triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
 
     ax.add_collection3d(triangle)
 
 #Draws a triangle given the point indices - in actual triangulation
-def drawTriangleRed(index1, index2, index3, ax, x, y, z, highlightChanges):
+def drawTriangleRed(index1, index2, index3, ax, x, y):
 
     #Make sure colour is recognised as global one
     global red_transparent 
@@ -106,16 +98,12 @@ def drawTriangleRed(index1, index2, index3, ax, x, y, z, highlightChanges):
 
     # This is how I made it work - probably there are better ways though
     triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
-
-    if highlightChanges:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
-    else:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='red', linewidths=1, edgecolors=red_transparent)
+    triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
 
     ax.add_collection3d(triangle) 
 
 #Draws a triangle given the list of incides - in actual triangulation
-def drawTriangleRed(triagIndices, ax, x, y, z, highlightChanges):
+def drawTriangleRed(triagIndices, ax, x, y):
     
     #Make sure colour is recognised as global one
     global red_transparent
@@ -130,13 +118,74 @@ def drawTriangleRed(triagIndices, ax, x, y, z, highlightChanges):
 
     # This is how I made it work - probably there are better ways though
     triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
-    
-    if highlightChanges:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
-    else:
-        triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='red', linewidths=1, edgecolors=red_transparent)
+    triangle = Poly3DCollection(triag_vertices, alpha=0.0, facecolor='purple', linewidths=1, edgecolors='purple')
 
     ax.add_collection3d(triangle)
+
+
+#Draws a triangle given the point indices - in lifted triangulation
+def fillTriangleBlue(index1, index2, index3, ax, x, y, z):
+
+    #Make sure colour is recognised as global one
+    global blue_transparent
+
+    p1 = np.array([x[index1], y[index1], z[index1]])
+    p2 = np.array([x[index2], y[index2], z[index2]])
+    p3 = np.array([x[index3], y[index3], z[index3]])
+
+    # This is how I made it work - probably there are better ways though
+    triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
+    triangle = Poly3DCollection(triag_vertices, alpha=0.6, facecolor='purple', linewidths=1, edgecolors='purple')
+
+    ax.add_collection3d(triangle) 
+
+#Draws a triangle given the list of incides - in lifted triangulation
+def fillTriangleBlue(triagIndices, ax, x, y, z):
+
+    index1 = triagIndices[0]
+    index2 = triagIndices[1]
+    index3 = triagIndices[2]
+
+    p1 = np.array([x[index1], y[index1], z[index1]])
+    p2 = np.array([x[index2], y[index2], z[index2]])
+    p3 = np.array([x[index3], y[index3], z[index3]])
+
+    # This is how I made it work - probably there are better ways though
+    triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
+    triangle = Poly3DCollection(triag_vertices, alpha=0.6, facecolor='purple', linewidths=1, edgecolors='purple')
+
+    ax.add_collection3d(triangle)
+
+#Draws a triangle given the point indices - in actual triangulation
+def drawTriangleRed(index1, index2, index3, ax, x, y):
+
+    p1 = np.array([x[index1], y[index1], 0])
+    p2 = np.array([x[index2], y[index2], 0])
+    p3 = np.array([x[index3], y[index3], 0])
+
+    # This is how I made it work - probably there are better ways though
+    triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
+    triangle = Poly3DCollection(triag_vertices, alpha=0.6, facecolor='purple', linewidths=1, edgecolors='purple')
+
+    ax.add_collection3d(triangle) 
+
+#Draws a triangle given the list of incides - in actual triangulation
+def drawTriangleRed(triagIndices, ax, x, y):
+
+    index1 = triagIndices[0]
+    index2 = triagIndices[1]
+    index3 = triagIndices[2]
+
+    p1 = np.array([x[index1], y[index1], 0])
+    p2 = np.array([x[index2], y[index2], 0])
+    p3 = np.array([x[index3], y[index3], 0])
+
+    # This is how I made it work - probably there are better ways though
+    triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
+    triangle = Poly3DCollection(triag_vertices, alpha=0.6, facecolor='purple', linewidths=1, edgecolors='purple')
+    
+    ax.add_collection3d(triangle)
+
 
 """
 Flip two neighbouring triangles: A B (not necessarily Lawson Flip!)
@@ -372,10 +421,10 @@ def visualize_delaunay():
     root.title("Delaunay Triangulation Visualisation")
 
     #Create boolean variables
-    drawBlueTriag_ = tk.BooleanVar()
-    drawRedTriag_ = tk.BooleanVar(value=True)
-    drawBluePoints_ = tk.BooleanVar()
-    drawRedPoints_ = tk.BooleanVar(value=True)
+    drawBlueTriag_ = tk.BooleanVar(value=True)
+    drawRedTriag_ = tk.BooleanVar()
+    drawBluePoints_ = tk.BooleanVar(value=True)
+    drawRedPoints_ = tk.BooleanVar()
     drawConnectors_ = tk.BooleanVar()
     drawTriagLabelsBlue_ = tk.BooleanVar()
     drawPointLabelsBlue_ = tk.BooleanVar()
@@ -410,7 +459,7 @@ def visualize_delaunay():
     Entry(root, textvariable=paraboloidStrength_).pack()
 
     # Add read-only field for number of points
-    numb_points_ = IntVar(value=50)
+    numb_points_ = IntVar(value=10)
     tk.Label(root, text="Number of Points").pack()
     readonly_entry_numb_points = tk.Entry(root, textvariable=numb_points_, state='readonly')
     readonly_entry_numb_points.pack()
@@ -437,8 +486,13 @@ def visualize_delaunay():
     Entry(root, textvariable=circle_index2_).pack()
 
     circle_index3_ = IntVar(value=0)
-    tk.Label(root, text=">Third Point").pack()
+    tk.Label(root, text="Third Point").pack()
     Entry(root, textvariable=circle_index3_).pack()
+
+    #Add input to highlight a triangle
+    triangle_index1_highlight_ = IntVar(value=0)
+    tk.Label(root, text="Triangle To Highlight").pack()
+    Entry(root, textvariable=triangle_index1_highlight_).pack()
 
     #Initialise the Delaunay Triangulation
     tri_, points2D_, x_, y_, z_ = createDelaunay(defaultPoints=defaultPoints_.get(), numb_points=numb_points_.get())
@@ -525,6 +579,29 @@ def visualize_delaunay():
         #Note how ax was not set as we will want to do this inside of the visualisation function
         update_visualization(circle_draw)
 
+    def highlightTriangle():
+        #Partially execute the function to then be passed the last parameter ax
+        triangle_highlight = lambda ax_param : drawTriangleBlue(triagIndices = tri_.simplices[triangle_index1_highlight_.get()], 
+                                                                ax = ax_param, 
+                                                                x = x_, 
+                                                                y = y_, 
+                                                                z = z_)
+        
+        #Execute the function and update the visualisation
+        update_visualization(triangle_highlight)
+
+    def fillTriangle():
+        #Partially execute the function to then be passed the last parameter ax
+        triangle_highlight = lambda ax_param : fillTriangleBlue(triagIndices = tri_.simplices[triangle_index1_highlight_.get()], 
+                                                                ax = ax_param, 
+                                                                x = x_, 
+                                                                y = y_, 
+                                                                z = z_)
+        
+        #Execute the function and update the visualisation
+        update_visualization(triangle_highlight)
+        
+
     # Button to update the visualization
     tk.Button(root, text="Update Visualization", command=update_visualization).pack()
 
@@ -534,12 +611,20 @@ def visualize_delaunay():
     # Button to draw circle
     tk.Button(root, text="Draw Circle", command=drawCircle2D).pack()
 
+    # Button to draw circle
+    tk.Button(root, text="Highlight Triangle", command=highlightTriangle).pack()
+
+    # Button to draw circle
+    tk.Button(root, text="Fill Triangle", command=fillTriangle).pack()
+
     # Start the GUI event loop
     root.mainloop()
 
 
 #Start the program
 visualize_delaunay()
+
+
 
 
     
