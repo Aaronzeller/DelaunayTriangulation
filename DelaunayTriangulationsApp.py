@@ -53,9 +53,6 @@ def createDelaunay(defaultPoints, numb_points):
 #Draws a triangle given the point indices - in lifted triangulation
 def drawTriangleBlue(index1, index2, index3, ax, x, y, z):
 
-    #Make sure colour is recognised as global one
-    global blue_transparent
-
     p1 = np.array([x[index1], y[index1], z[index1]])
     p2 = np.array([x[index2], y[index2], z[index2]])
     p3 = np.array([x[index3], y[index3], z[index3]])
@@ -68,9 +65,6 @@ def drawTriangleBlue(index1, index2, index3, ax, x, y, z):
 
 #Draws a triangle given the list of incides - in lifted triangulation
 def drawTriangleBlue(triagIndices, ax, x, y, z):
-    
-    #Make sure colour is recognised as global one
-    global blue_transparent
 
     index1 = triagIndices[0]
     index2 = triagIndices[1]
@@ -89,9 +83,6 @@ def drawTriangleBlue(triagIndices, ax, x, y, z):
 #Draws a triangle given the point indices - in actual triangulation
 def drawTriangleRed(index1, index2, index3, ax, x, y):
 
-    #Make sure colour is recognised as global one
-    global red_transparent 
-
     p1 = np.array([x[index1], y[index1], 0])
     p2 = np.array([x[index2], y[index2], 0])
     p3 = np.array([x[index3], y[index3], 0])
@@ -104,9 +95,6 @@ def drawTriangleRed(index1, index2, index3, ax, x, y):
 
 #Draws a triangle given the list of incides - in actual triangulation
 def drawTriangleRed(triagIndices, ax, x, y):
-    
-    #Make sure colour is recognised as global one
-    global red_transparent
 
     index1 = triagIndices[0]
     index2 = triagIndices[1]
@@ -125,9 +113,6 @@ def drawTriangleRed(triagIndices, ax, x, y):
 
 #Draws a triangle given the point indices - in lifted triangulation
 def fillTriangleBlue(index1, index2, index3, ax, x, y, z):
-
-    #Make sure colour is recognised as global one
-    global blue_transparent
 
     p1 = np.array([x[index1], y[index1], z[index1]])
     p2 = np.array([x[index2], y[index2], z[index2]])
@@ -157,7 +142,7 @@ def fillTriangleBlue(triagIndices, ax, x, y, z):
     ax.add_collection3d(triangle)
 
 #Draws a triangle given the point indices - in actual triangulation
-def drawTriangleRed(index1, index2, index3, ax, x, y):
+def fillTriangleRed(index1, index2, index3, ax, x, y):
 
     p1 = np.array([x[index1], y[index1], 0])
     p2 = np.array([x[index2], y[index2], 0])
@@ -170,7 +155,7 @@ def drawTriangleRed(index1, index2, index3, ax, x, y):
     ax.add_collection3d(triangle) 
 
 #Draws a triangle given the list of incides - in actual triangulation
-def drawTriangleRed(triagIndices, ax, x, y):
+def fillTriangleRed(triagIndices, ax, x, y):
 
     index1 = triagIndices[0]
     index2 = triagIndices[1]
@@ -186,6 +171,25 @@ def drawTriangleRed(triagIndices, ax, x, y):
     
     ax.add_collection3d(triangle)
 
+#Draws a triangle given the list of incides - in lifted triangulation
+def drawLineTriangle(triangle_index_1, triangle_index_2, tri, ax, x, y, z):
+
+    triangle1 = tri.simplices[triangle_index_1]
+    triangle2 = tri.simplices[triangle_index_2]
+
+    #Find the two points the two triangles do not share
+    difference = list(set(triangle1) ^ set(triangle2))
+
+    if len(difference) != 2: # Can only draw line between neighbouring triangles
+        print("Cannot flip non-neighbouring triangles!")
+        return
+    
+    point_index_1 = difference[0]
+    point_index_2 = difference[1]
+    
+    ax.plot([x[point_index_1], x[point_index_2]], [y[point_index_1], y[point_index_2]], [z[point_index_1], z[point_index_2]], color='purple', linestyle='--')
+
+    
 
 """
 Flip two neighbouring triangles: A B (not necessarily Lawson Flip!)
@@ -316,7 +320,7 @@ def drawCircle(index1, index2, index3, x, y, z, ax, highlightPointsInsideCircle 
 
 #=============================================== PLOTTING ===============================================#
 
-def drawDelaunay(tri, ax, points2D, x, y, z, drawBlueTriag, drawRedTriag, drawBluePoints, drawRedPoints, drawConnectors, drawTriagLabelsBlue, drawPointLabelsBlue, drawTriagLabelsRed, drawPointLabelsRed, drawParaboloid, paraboloidStrength, defaultPoints, numb_points, axis, debugInfo, circle_numb_points, highlightPointsInsideCircle):
+def drawDelaunay(tri, ax, points2D, x, y, z, drawBlueTriag, drawRedTriag, drawBluePoints, drawRedPoints, drawConnectors, drawTriagLabelsBlue, drawPointLabelsBlue, drawTriagLabelsRed, drawPointLabelsRed, drawParaboloid, paraboloidStrength, defaultPoints, numb_points, axis, debugInfo, circle_numb_points, highlightPointsInsideCircle, fillAll):
     
     #Make sure colours are recognised to be the global ones
     global red_transparent 
@@ -370,9 +374,33 @@ def drawDelaunay(tri, ax, points2D, x, y, z, drawBlueTriag, drawRedTriag, drawBl
         # Draw the triangle for the lifted points in transparent blue
         if drawBlueTriag:
             for i in range(3):
-                start_point = np.append(points2D[simplex[i]], z[simplex[i]])
-                end_point = np.append(points2D[simplex[(i + 1) % 3]], z[simplex[(i + 1) % 3]])
-                ax.plot([start_point[0], end_point[0]], [start_point[1], end_point[1]], [start_point[2], end_point[2]], color=blue_transparent)
+                if fillAll:
+                    triangle = tri.simplices[index]
+
+                    index1 = triangle[0]
+                    index2 = triangle[1]
+                    index3 = triangle[2]
+
+                    p1 = np.array([x[index1], y[index1], z[index1]])
+                    p2 = np.array([x[index2], y[index2], z[index2]])
+                    p3 = np.array([x[index3], y[index3], z[index3]])
+
+                    # This is how I made it work - probably there are better ways though
+                    triag_vertices = [list(zip([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]]))]
+                    triangle = Poly3DCollection(triag_vertices, alpha=0.2, facecolor='grey', linewidths=1, edgecolors='black')
+
+                    ax.add_collection3d(triangle)
+                else:
+                    start_point = np.append(points2D[simplex[i]], z[simplex[i]])
+                    end_point = np.append(points2D[simplex[(i + 1) % 3]], z[simplex[(i + 1) % 3]])
+
+                    ax.plot([start_point[0], end_point[0]], [start_point[1], end_point[1]], [start_point[2], end_point[2]], color=blue_transparent)
+
+                
+                
+
+    
+
 
     # Hide the axes
     if not axis:
@@ -428,7 +456,6 @@ def visualize_delaunay():
     drawConnectors_ = tk.BooleanVar()
     drawTriagLabelsBlue_ = tk.BooleanVar()
     drawPointLabelsBlue_ = tk.BooleanVar()
-    drawTriagLabelsRed = tk.BooleanVar()
     drawTriagLabelsRed_ = tk.BooleanVar()
     drawPointLabelsRed_ = tk.BooleanVar()
     drawParaboloid_ = tk.BooleanVar()
@@ -436,6 +463,7 @@ def visualize_delaunay():
     axis_ = tk.BooleanVar()
     debugInfo_ = tk.BooleanVar()
     highlightPointsInsideCircle_ = tk.BooleanVar()
+    fillAll_ = tk.BooleanVar()
 
     # Create checkboxes for each parameter
     tk.Checkbutton(root, text="Draw Blue Triag", variable=drawBlueTriag_).pack()
@@ -452,6 +480,7 @@ def visualize_delaunay():
     tk.Checkbutton(root, text="Draw Axis", variable=axis_).pack()
     tk.Checkbutton(root, text="Print Debug Information", variable=debugInfo_).pack()
     tk.Checkbutton(root, text="Display Points Inside Circle", variable=highlightPointsInsideCircle_).pack()
+    tk.Checkbutton(root, text="Fill All Triangles", variable=fillAll_).pack()
 
     # Add entry fields for paraboloid strength
     paraboloidStrength_ = DoubleVar(value=0.2)
@@ -459,7 +488,7 @@ def visualize_delaunay():
     Entry(root, textvariable=paraboloidStrength_).pack()
 
     # Add read-only field for number of points
-    numb_points_ = IntVar(value=10)
+    numb_points_ = IntVar(value=50)
     tk.Label(root, text="Number of Points").pack()
     readonly_entry_numb_points = tk.Entry(root, textvariable=numb_points_, state='readonly')
     readonly_entry_numb_points.pack()
@@ -548,8 +577,8 @@ def visualize_delaunay():
                      axis = axis_.get(),                                                  #Should the axis be drawn?                               ACTUAL AXIS
                      debugInfo = debugInfo_.get(),                                        #Should there be debug information?                      DEBUGGING
                      circle_numb_points = circle_numb_points_.get(),                      #How many points should be in a "Delaunay" circle        NON-DELAUNAY TRIANGLES
-                     highlightPointsInsideCircle = highlightPointsInsideCircle_.get())    #Show points inside "Delaunay" circle                    NON-DELAUNAY TRIANGLES
-
+                     highlightPointsInsideCircle = highlightPointsInsideCircle_.get(),    #Show points inside "Delaunay" circle                    NON-DELAUNAY TRIANGLES
+                     fillAll = fillAll_.get())                                            #Fill all triangles to show shape                        TRIANGLE HIGHLIGHTING
 
     def flipTriangles():
         #Flip the triangles internally
@@ -600,6 +629,18 @@ def visualize_delaunay():
         
         #Execute the function and update the visualisation
         update_visualization(triangle_highlight)
+
+    def drawLineBetweenTriangles():
+        #Partially execute the function to then be passed the last parameter ax
+        lineBetweenTriangles = lambda ax_param : drawLineTriangle(triangle_index_1 = triangle_index1_.get(), 
+                                                                  triangle_index_2 = triangle_index2_.get(), 
+                                                                  tri = tri_, 
+                                                                  ax = ax_param, 
+                                                                  x = x_, 
+                                                                  y = y_, 
+                                                                  z = z_)
+        #Execute the function and update the visualisation
+        update_visualization(lineBetweenTriangles)
         
 
     # Button to update the visualization
@@ -614,8 +655,11 @@ def visualize_delaunay():
     # Button to draw circle
     tk.Button(root, text="Highlight Triangle", command=highlightTriangle).pack()
 
-    # Button to draw circle
+    # Button to fill triangles
     tk.Button(root, text="Fill Triangle", command=fillTriangle).pack()
+
+    # Button to draw line between two triangles
+    tk.Button(root, text="Draw Line Between Triangles", command=drawLineBetweenTriangles).pack()
 
     # Start the GUI event loop
     root.mainloop()
@@ -623,7 +667,6 @@ def visualize_delaunay():
 
 #Start the program
 visualize_delaunay()
-
 
 
 
